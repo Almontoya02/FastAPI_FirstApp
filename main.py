@@ -6,7 +6,7 @@ from enum import Enum #Para poder definir la validaciones
 from pydantic import BaseModel, Field
 
 #FastAPI
-from fastapi import FastAPI ,Body, Query, Path
+from fastapi import FastAPI ,Body, Query, Path, status
 
 app = FastAPI() #Instancia de FastAPI 
 
@@ -18,7 +18,7 @@ class HairColor(str,Enum): #Hereda de enum, el str permite que se visualice mejo
     brown = "brown"
     black = "black"
 
-class Person(BaseModel):
+class PersonBase(BaseModel):
     first_name:str = Field(
         ...,
         min_length=1,
@@ -39,35 +39,6 @@ class Person(BaseModel):
         ) 
     hair_color:Optional[HairColor] = Field(default=None)
     is_married:Optional[bool] = Field(default=None)
-    password: str = Field(
-        ...,
-        min_length=8
-    )
-
-class PersonOut(BaseModel):
-    first_name:str = Field(
-        ...,
-        min_length=1,
-        max_length=100,
-        example="Alejo"
-        ) #Para validar el parametro del modelo
-    last_name:str = Field(
-        ...,
-        min_length=1,
-        max_length=100,
-        example="Montoya"
-        ) 
-    age:int = Field(
-        ...,
-        gt=0,
-        le=80,
-        example=23
-        ) 
-    hair_color:Optional[HairColor] = Field(default=None)
-    is_married:Optional[bool] = Field(default=None)
-
-    
-
     # class Config:
     #     schema_extra={ #Para enviar una repsuesta por defecto
     #         "example": {
@@ -78,14 +49,25 @@ class PersonOut(BaseModel):
     #             "is_married": False
     #         }
     #     }
+class Person(PersonBase):
+    password: str = Field(
+        ...,
+        min_length=8
+    )
 
+class PersonOut(PersonBase):
+    pass #keyword de python para indicar que no pasa nada
+    
 class Location(BaseModel):
     city:str
     state:str
     country:str
 
 #Methods
-@app.get("/")
+@app.get(
+    "/", 
+    status_code=status.HTTP_200_OK
+    )
 def get():
     return {
         "bb":"cito"
@@ -93,11 +75,19 @@ def get():
 
 #Request and response Body
 #@app.post("/person/new", response_model= Person, response_model_exclude={"password"}) #Excluye la contraseña sin necesidad de crear una nueva clase
-@app.post("/person/new", response_model= PersonOut)
+@app.post(
+    "/person/new", 
+    response_model= PersonOut,
+    status_code=status.HTTP_201_CREATED
+    )
+
 def create_person(person: Person = Body(...)): ## los ... ellipsis indican que el body es obligatorio, en versionas mpás recientes no se necesario ponerlo
     return person
 
-@app.get("/person/detail")
+@app.get(
+    "/person/detail",
+    status_code=status.HTTP_200_OK
+    )
 def show_person(
     name:Optional[str] = Query(
         None, 
