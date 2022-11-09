@@ -6,7 +6,9 @@ from enum import Enum #Para poder definir la validaciones
 from pydantic import BaseModel, Field, EmailStr
 
 #FastAPI
+
 from fastapi import FastAPI ,Body, Query, Path, Form, Header, Cookie, UploadFile, File, status
+from fastapi import HTTPException
 
 app = FastAPI() #Instancia de FastAPI 
 
@@ -110,6 +112,9 @@ def show_person(
     return {name:age}
 
 #Validaciones path parameters
+
+persons = [1,2,3,4,5,6]
+
 @app.get("/person/detail/{person_id}")
 def show_person(
     person_id:int = Path(
@@ -119,7 +124,14 @@ def show_person(
         description="This is the person id. It's greater than 0"
         ),
 ):
+    if person_id not in persons:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="¡This person doesn't exist!"
+        )
+    
     return {person_id:"Existe"}
+
 
 #Validaciones path parameters
 @app.put("/person/{person_id}")
