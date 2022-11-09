@@ -77,12 +77,14 @@ def show_person(
         min_length=1, 
         max_length=50,
         title="Person Name",
-        description="This is the person name. It's between 1 and 50 characters"
+        description="This is the person name. It's between 1 and 50 characters",
+        example="Alejito"
         ),
     age: int = Query(
         ...,
         title="Person Age",
-        description="This is the person age. It's required"
+        description="This is the person age. It's required",
+        example=23
         ) #Lo hacemos obligatorio, sin embargo con query no es lo ideal manejarlo así
 ):
     return {name:age}
@@ -106,7 +108,8 @@ def update_person(
         ..., 
         gt=0,
         title="Person ID",
-        description="This is the person id. It's greater than 0"
+        description="This is the person id. It's greater than 0",
+        example=70
     ),
     person:Person = Body(...),
     location:Location = Body(...)
