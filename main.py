@@ -71,7 +71,8 @@ class LoginOut(BaseModel):
 #Methods
 @app.get(
     "/", 
-    status_code=status.HTTP_200_OK
+    status_code=status.HTTP_200_OK,
+    tags=["home"]
     )
 def get():
     return {
@@ -83,7 +84,8 @@ def get():
 @app.post(
     "/person/new", 
     response_model= PersonOut,
-    status_code=status.HTTP_201_CREATED
+    status_code=status.HTTP_201_CREATED,
+    tags=["Persons"]
     )
 
 def create_person(person: Person = Body(...)): ## los ... ellipsis indican que el body es obligatorio, en versionas mpás recientes no se necesario ponerlo
@@ -91,7 +93,8 @@ def create_person(person: Person = Body(...)): ## los ... ellipsis indican que e
 
 @app.get(
     "/person/detail",
-    status_code=status.HTTP_200_OK
+    status_code=status.HTTP_200_OK,
+    tags=["Persons"]
     )
 def show_person(
     name:Optional[str] = Query(
@@ -121,7 +124,8 @@ def show_person(
         ..., 
         gt=0,
         title="Person ID",
-        description="This is the person id. It's greater than 0"
+        description="This is the person id. It's greater than 0",
+        tags=["Persons"]
         ),
 ):
     if person_id not in persons:
@@ -134,7 +138,7 @@ def show_person(
 
 
 #Validaciones path parameters
-@app.put("/person/{person_id}")
+@app.put("/person/{person_id}",tags=["Persons"])
 def update_person(
     person_id:int = Path(
         ..., 
@@ -155,7 +159,8 @@ def update_person(
 @app.post(
     path="/login",
     response_model=LoginOut,
-    status_code=status.HTTP_200_OK
+    status_code=status.HTTP_200_OK,
+    tags=["Login","Persons"]
 )
 def login(username:str = Form(...), password:str = Form(...)):
     return LoginOut(username=username)
@@ -163,7 +168,8 @@ def login(username:str = Form(...), password:str = Form(...)):
 #Cookies and headers
 @app.post(
     path="/contact",
-    status_code=status.HTTP_200_OK
+    status_code=status.HTTP_200_OK,
+    tags=["Contacts"]
 )
 def contact(
     first_name: str = Form(
