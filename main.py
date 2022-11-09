@@ -39,6 +39,33 @@ class Person(BaseModel):
         ) 
     hair_color:Optional[HairColor] = Field(default=None)
     is_married:Optional[bool] = Field(default=None)
+    password: str = Field(
+        ...,
+        min_length=8
+    )
+
+class PersonOut(BaseModel):
+    first_name:str = Field(
+        ...,
+        min_length=1,
+        max_length=100,
+        example="Alejo"
+        ) #Para validar el parametro del modelo
+    last_name:str = Field(
+        ...,
+        min_length=1,
+        max_length=100,
+        example="Montoya"
+        ) 
+    age:int = Field(
+        ...,
+        gt=0,
+        le=80,
+        example=23
+        ) 
+    hair_color:Optional[HairColor] = Field(default=None)
+    is_married:Optional[bool] = Field(default=None)
+
     
 
     # class Config:
@@ -65,9 +92,9 @@ def get():
     }
 
 #Request and response Body
-@app.post("/person/new")
+#@app.post("/person/new", response_model= Person, response_model_exclude={"password"}) #Excluye la contraseña sin necesidad de crear una nueva clase
+@app.post("/person/new", response_model= PersonOut)
 def create_person(person: Person = Body(...)): ## los ... ellipsis indican que el body es obligatorio, en versionas mpás recientes no se necesario ponerlo
-
     return person
 
 @app.get("/person/detail")
