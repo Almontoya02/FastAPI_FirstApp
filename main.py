@@ -75,20 +75,40 @@ class LoginOut(BaseModel):
     tags=["home"]
     )
 def get():
+    """
+    Get 
+    
+    This Path operation gets a person
+    
+    Returns bb cito
+    """
     return {
         "bb":"cito"
     }
 
 #Request and response Body
 #@app.post("/person/new", response_model= Person, response_model_exclude={"password"}) #Excluye la contraseña sin necesidad de crear una nueva clase
+
 @app.post(
     "/person/new", 
     response_model= PersonOut,
     status_code=status.HTTP_201_CREATED,
-    tags=["Persons"]
+    tags=["Persons"],
+    summary="Create person in the app"
     )
 
 def create_person(person: Person = Body(...)): ## los ... ellipsis indican que el body es obligatorio, en versionas mpás recientes no se necesario ponerlo
+    """
+    Create Person
+    
+    This Path operation creates a person in the app and save the information in the database
+    
+    Parameters:
+    - Request body parameter:
+        - **person: Person** -> A person model with first names, last name, age....
+    
+    Returns a person model with first name, last name, age, hair color ....
+    """
     return person
 
 @app.get(
@@ -112,6 +132,17 @@ def show_person(
         example=23
         ) #Lo hacemos obligatorio, sin embargo con query no es lo ideal manejarlo así
 ):
+    """
+    Get Person
+    
+    This Path operation gets a person
+    
+    Parameters:
+    - Request body parameter:
+        - **No required**
+    
+    Returns a person age and name
+    """
     return {name:age}
 
 #Validaciones path parameters
