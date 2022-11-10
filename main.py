@@ -114,7 +114,8 @@ def create_person(person: Person = Body(...)): ## los ... ellipsis indican que e
 @app.get(
     "/person/detail",
     status_code=status.HTTP_200_OK,
-    tags=["Persons"]
+    tags=["Persons"],
+    deprecated=True # HAce que en la documentación aparezca deprecado
     )
 def show_person(
     name:Optional[str] = Query(
